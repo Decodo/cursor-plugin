@@ -1,0 +1,23 @@
+{
+  "name": "decodo",
+  "displayName": "Decodo",
+  "version": "0.1.0",
+  "description": "Web scraping, SERP, and e-commerce data for AI agents. Handles JavaScript rendering, anti-bot/CAPTCHA, proxy rotation, and geo-targeting through the Decodo CLI.",
+  "author": {
+    "name": "Decodo",
+    "email": "tech@decodo.com"
+  },
+  "homepage": "https://decodo.com",
+  "repository": "https://github.com/Decodo/cursor-plugin",
+  "license": "MIT",
+  "keywords": [
+    "decodo",
+    "web",
+    "scraping",
+    "serp",
+    "search",
+    "ecommerce",
+    "proxy"
+  ],
+  "logo": "assets/logo.svg"
+}
