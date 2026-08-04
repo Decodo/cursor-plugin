@@ -101,8 +101,10 @@ the `decodo` skill.
 
 ## Version note
 
-Target `@decodo/cli` v1.0.0 or newer. If `decodo --version` reports 0.x, upgrade before
-debugging anything else — flags and target subcommands changed:
+Target `@decodo/cli` v1.0.0 or newer — v1.0.0 is the first stable release, and 0.x predates
+it. Target subcommands are generated from the API schema at runtime, so new targets appear
+without upgrading; the version matters for the command surface and flags, not the target list.
+If `decodo --version` reports 0.x, upgrade before debugging anything else:
 
 ```bash
 npm install -g @decodo/cli@latest
