@@ -1,0 +1,109 @@
+---
+description: Install the Decodo CLI and recover from install, PATH, or authentication failures.
+alwaysApply: false
+---
+
+# Decodo CLI installation and recovery
+
+The `decodo` skill assumes a working CLI. Use this rule when installation, `PATH`, or
+authentication fails.
+
+## Zero-install first
+
+No install is needed to try a command:
+
+```bash
+npx -y @decodo/cli whoami
+```
+
+If that works, every command in the skill works with the `npx -y @decodo/cli` prefix. Only
+install when the user wants a persistent `decodo` command.
+
+## Install
+
+```bash
+curl -fsSL https://decodo.github.io/cli/install.sh | sh   # macOS / Linux (recommended)
+irm https://decodo.github.io/cli/install.ps1 | iex        # Windows PowerShell
+npm install -g @decodo/cli                                # any platform
+```
+
+Verify:
+
+```bash
+decodo --version && decodo whoami
+```
+
+## Authentication
+
+The user needs a Web Scraping API basic auth token from
+<https://dashboard.decodo.com/playground> (free account = up to 2K requests, no card).
+
+```bash
+export DECODO_AUTH_TOKEN='<token>'     # preferred: no interaction, session-scoped
+decodo setup --token '<token>'         # persist to config
+```
+
+Never run a bare `decodo setup` — it opens an interactive prompt you cannot drive.
+
+Precedence: `--token` → `DECODO_AUTH_TOKEN` → saved config.
+
+**Treat the token as a secret.** Never `cat`, read, or echo it from a config file to work
+around missing auth. If auth is missing, ask the user for a token.
+
+## Failure recovery
+
+### `decodo: command not found` after install
+
+The npm global bin directory is not on `PATH`.
+
+1. Fall back to `npx -y @decodo/cli <command>` — this always works, prefer it over debugging.
+2. To fix properly: `npm bin -g` was removed in npm 9+; use `npm prefix -g` and add
+   `<prefix>/bin` to `PATH`.
+
+### `EACCES` / permission denied during `npm install -g`
+
+Common on company-managed machines where Node lives in `/usr/local/lib` without sudo access.
+Do **not** suggest `sudo npm install -g`. Either use the `curl` installer above, or relocate
+the npm prefix:
+
+```bash
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+export PATH=~/.npm-global/bin:$PATH   # add to ~/.zshrc or ~/.bashrc to persist
+npm install -g @decodo/cli
+```
+
+If neither works, use `npx -y @decodo/cli` and move on — it needs no install.
+
+### Exit code 3, "auth required", 401, or "unauthorized"
+
+The token is missing, expired, or invalid. Confirm what the CLI thinks it has:
+
+```bash
+decodo whoami        # prints auth source + masked token
+```
+
+Then, if an ask-user tool is available (such as `AskUserQuestion`), ask:
+
+**"How would you like to authenticate with Decodo?"**
+
+1. **Paste an API token (Recommended)** — from <https://dashboard.decodo.com/playground>
+2. **Set it for this session only** — export `DECODO_AUTH_TOKEN`
+
+For option 1 run `decodo setup --token '<token>'`; for option 2 `export DECODO_AUTH_TOKEN='<token>'`.
+Tell the user to add the export to `~/.zshrc` or `~/.bashrc` for persistence. Then retry the
+original command.
+
+### Exit code 5 (rate limited), 6 (timeout), 7 (network/server)
+
+Not install problems. Back off and retry with reduced concurrency. See the exit-code table in
+the `decodo` skill.
+
+## Version note
+
+Target `@decodo/cli` v1.0.0 or newer. If `decodo --version` reports 0.x, upgrade before
+debugging anything else — flags and target subcommands changed:
+
+```bash
+npm install -g @decodo/cli@latest
+```

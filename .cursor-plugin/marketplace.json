@@ -1,0 +1,18 @@
+{
+  "name": "decodo",
+  "owner": {
+    "name": "Decodo",
+    "email": "tech@decodo.com"
+  },
+  "metadata": {
+    "description": "Web data plugins by Decodo: scraping, SERP, and e-commerce extraction",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "decodo",
+      "source": "./plugins/decodo",
+      "description": "Web scraping, SERP, and e-commerce data for AI agents via the Decodo CLI"
+    }
+  ]
+}
