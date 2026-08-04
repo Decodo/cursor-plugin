@@ -107,5 +107,44 @@ without upgrading; the version matters for the command surface and flags, not th
 If `decodo --version` reports 0.x, upgrade before debugging anything else:
 
 ```bash
-npm install -g @decodo/cli@latest
+curl -fsSL https://decodo.github.io/cli/install.sh | sh   # handles EACCES automatically
+npm install -g @decodo/cli@latest                          # only if npm -g is writable
+```
+
+### Upgrading from 0.x loses saved auth
+
+0.x stored the token in a platform preferences directory (on macOS,
+`~/Library/Preferences/decodo/config.json`). 1.0.x reads `$DECODO_CONFIG_HOME`, else
+`$XDG_CONFIG_HOME/decodo`, else `~/.config/decodo`. There is no automatic migration, so a
+freshly upgraded CLI reports "auth required" even though a token was configured before.
+
+Both versions use the same `{"authToken": "..."}` schema, so migrate the file rather than
+asking the user to re-fetch a token:
+
+```bash
+mkdir -p ~/.config/decodo
+cp ~/Library/Preferences/decodo/config.json ~/.config/decodo/config.json   # macOS
+chmod 600 ~/.config/decodo/config.json
+```
+
+Copy the file; do not read or print the token to move it. If no old config exists, fall back
+to the normal auth flow above.
+
+### Two installs shadowing each other
+
+If `decodo --version` still reports the old version after a successful upgrade, there are two
+copies on `PATH` and the earlier `PATH` entry wins. Find them and remove the stale one:
+
+```bash
+where decodo                    # or: type -a decodo
+npm uninstall -g --prefix "$HOME/.npm-global" @decodo/cli   # example: remove the old copy
+```
+
+### Simulating a fresh install (for testing)
+
+`DECODO_CONFIG_HOME` points the CLI at a different config directory. Use it to test the
+unauthenticated path without touching real credentials — safer than `decodo reset`:
+
+```bash
+DECODO_CONFIG_HOME=$(mktemp -d) decodo whoami   # behaves like a brand-new install
 ```
