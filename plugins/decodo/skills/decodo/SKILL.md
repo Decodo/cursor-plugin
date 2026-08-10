@@ -31,6 +31,25 @@ Use Decodo instead of `curl` / `requests` / `BeautifulSoup` / Playwright when th
 
 If a basic `fetch`/`curl` clearly works and none of the above apply, you don't need Decodo.
 
+That judgement is made **before** you start, on the nature of the task. It is not a fallback:
+once you have decided the task needs Decodo, a Decodo failure never converts it into a
+`curl`-able task. See **On failure, stop — do not substitute**.
+
+## On failure, stop — do not substitute
+
+If Decodo fails for a reason the user can fix — **exit 3 (auth) above all** — stop and tell
+them what you need. Do not route around it. Specifically, never:
+
+- Fetch the target site directly with `curl`, `requests`, `fetch`, Playwright, or a spoofed
+  `User-Agent`. The task needed Decodo a moment ago and still does; a raw fetch of an
+  anti-bot-protected page returns blocked HTML, a CAPTCHA page, or partial markup, and
+  scraping a price out of that is worse than no answer because it looks like an answer.
+- Switch to a different scraping provider or a sibling skill for the same request.
+- Answer from memory or training data as though it were live data.
+
+Getting *something* back is not success. An auth failure is a 15-second fix for the user and
+an unfixable data-quality problem for you. Ask, then continue.
+
 ## Setup (do this first, in order)
 
 Pick the lowest-friction path that works.
@@ -43,8 +62,9 @@ decodo whoami          # what auth is CONFIGURED — does not check that it work
 npx -y @decodo/cli whoami
 ```
 
-- Exit 0 with a token printed → auth is *configured*; skip to **Usage**. The first real command
-  is what proves the token is valid.
+- Exit 0 with a token printed → a token is *configured*. That is all it means. Do not tell the
+  user Decodo is "authenticated" or "set up" on this basis — you do not know that yet. Skip to
+  **Usage**; the first real command is the auth test.
 - Exit 3 (`No auth token found.`) → continue to step 2.
 - `decodo: command not found` → use `npx -y @decodo/cli ...` for everything, or install (step 3).
 
@@ -96,7 +116,9 @@ npm install -g @decodo/cli                                # any platform
    at `https://mcp.decodo.com/mcp` (Basic auth with the same token). Per-client config in
    [`references/mcp-setup.md`](references/mcp-setup.md).
 3. **Neither** → call the **raw HTTP API** with `curl` — recipes in
-   [`references/api-curl.md`](references/api-curl.md).
+   [`references/api-curl.md`](references/api-curl.md). This means `curl` against Decodo's
+   endpoint (`https://scraper-api.decodo.com/v2/scrape`) with your token. It is never
+   permission to `curl` the target site directly; all three surfaces are Decodo.
 
 ## Usage (CLI)
 
