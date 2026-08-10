@@ -84,7 +84,7 @@ and it will work through them. Common cases:
 
 | Symptom | Cause |
 | --- | --- |
-| "auth required" after upgrading from CLI 0.x | Config location changed; the rule migrates it |
+| `No auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
 | `EACCES` on `npm install -g` | Use the `curl` installer instead |
 | Old version after upgrading | Two installs on `PATH`; `where decodo` to find both |
 

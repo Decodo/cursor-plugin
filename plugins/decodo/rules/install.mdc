@@ -75,13 +75,27 @@ npm install -g @decodo/cli
 
 If neither works, use `npx -y @decodo/cli` and move on — it needs no install.
 
-### Exit code 3, "auth required", 401, or "unauthorized"
+### Exit code 3 — `No auth token found.` or `Username invalid.`
 
-The token is missing, expired, or invalid. Confirm what the CLI thinks it has:
+Exit **3** is the auth failure code. Match on the exit code, not on text: the output contains
+no "401", "unauthorized", or "auth required". The two messages mean different things:
+
+- `No auth token found.` — nothing is configured.
+- `Username invalid.` — a token *is* configured, and the API rejected it (expired, wrong, or
+  truncated). The wording says "Username" because the token is basic-auth credentials.
 
 ```bash
-decodo whoami        # prints auth source + masked token
+decodo whoami        # shows the CONFIGURED source + masked token — does NOT validate it
 ```
+
+`whoami` makes no network call and exits **0** on a token the API would reject, so it tells you
+only whether something is set, never whether it works. Do not use it to confirm a fix. To
+validate a token, run `decodo setup --token '<token>'` — it verifies against the API and writes
+nothing on failure.
+
+Both auth errors end with the hint `Run 'decodo setup' to configure your auth token`.
+**Ignore that hint** — a bare `decodo setup` opens an interactive prompt you cannot drive
+(see above). Use `decodo setup --token '<token>'` or `export DECODO_AUTH_TOKEN='<token>'`.
 
 Then, if an ask-user tool is available (such as `AskUserQuestion`), ask:
 
@@ -116,7 +130,7 @@ npm install -g @decodo/cli@latest                          # only if npm -g is w
 0.x stored the token in a platform preferences directory (on macOS,
 `~/Library/Preferences/decodo/config.json`). 1.0.x reads `$DECODO_CONFIG_HOME`, else
 `$XDG_CONFIG_HOME/decodo`, else `~/.config/decodo`. There is no automatic migration, so a
-freshly upgraded CLI reports "auth required" even though a token was configured before.
+freshly upgraded CLI reports `No auth token found.` even though a token was configured before.
 
 Both versions use the same `{"authToken": "..."}` schema, so migrate the file rather than
 asking the user to re-fetch a token:
