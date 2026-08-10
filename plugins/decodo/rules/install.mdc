@@ -104,6 +104,13 @@ Then, if an ask-user tool is available (such as `AskUserQuestion`), ask:
 1. **Paste an API token (Recommended)** — from <https://dashboard.decodo.com/playground>
 2. **Set it for this session only** — export `DECODO_AUTH_TOKEN`
 
+**Ask — do not route around it.** An auth failure is fixable by the user in seconds. Never
+respond to exit 3 by fetching the target site directly (`curl`, `requests`, Playwright, a
+spoofed `User-Agent`), by switching to a different scraping provider or sibling skill, or by
+answering from memory as if it were live data. A raw fetch of an anti-bot-protected page
+returns blocked HTML or a CAPTCHA, so any value parsed out of it is silently wrong — worse
+than reporting the failure. Stop, ask, then retry the original command.
+
 For option 1 run `decodo setup --token '<token>'`; for option 2 `export DECODO_AUTH_TOKEN='<token>'`.
 Tell the user to add the export to `~/.zshrc` or `~/.bashrc` for persistence. Then retry the
 original command.
