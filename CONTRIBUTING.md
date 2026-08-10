@@ -57,20 +57,46 @@ intentional — the plugin is CLI-backed and ships neither.
 
 ## Testing locally
 
-Symlink the plugin into Cursor's local plugin directory and restart Cursor:
+Copy the plugin into Cursor's local plugin directory and restart Cursor:
 
 ```bash
-ln -s "$PWD/plugins/decodo" ~/.cursor/plugins/local/decodo
+rm -rf ~/.cursor/plugins/local/decodo
+cp -R plugins/decodo ~/.cursor/plugins/local/decodo
 ```
 
-Point the symlink at the plugin folder, not the repository root — Cursor expects
-`.cursor-plugin/plugin.json` at the top of what you link. Remove it with
-`rm ~/.cursor/plugins/local/decodo`.
+**Do not symlink.** Cursor refuses symlinked local plugins: it enumerates
+`~/.cursor/plugins/local/` with `readdir({withFileTypes: true})` and skips every entry
+whose `isDirectory()` is false — which is the case for a symlink — then rejects symlinks
+again with an explicit check, and its file reader throws on them too. A symlinked plugin
+loads nothing and reports no error, so it looks like it worked. Verified against Cursor
+3.2.21.
 
-Local plugins do not always appear under Settings → Plugins even when they load, so treat
-agent behaviour as the real signal.
+Because this is a copy and not a link, re-run both commands after every edit.
 
-Worth testing:
+Copy the plugin folder, not the repository root — Cursor expects `.cursor-plugin/plugin.json`
+at the top of what you copy.
+
+Confirm the load in the session log rather than trusting the UI:
+
+```bash
+LOGS="$HOME/Library/Application Support/Cursor/logs"
+grep -rihE "loadUserLocalPlugin|AgentSkillsService load completed" "$LOGS/$(ls -t "$LOGS" | head -1)"
+```
+
+A successful load looks like this:
+
+```text
+loadUserLocalPlugin decodo loaded in 152.8ms
+loadUserLocalPlugins completed in 181.2ms (1 plugins loaded)
+CursorPluginsAgentSkillsService load completed {"ruleCount":2,"skillCount":1}
+```
+
+`0 plugins loaded` means Cursor did not pick the plugin up, and `skillCount:0` means the
+skill is not in context no matter how the agent behaves. Cursor writes a new log directory
+per launch, so check that the timestamp belongs to the current session before reading
+anything into the counts.
+
+Worth testing (all of it requires a confirmed load first):
 
 - The skill triggers unprompted on a relevant request, without Decodo being named.
 - The unauthenticated path works. Use `DECODO_CONFIG_HOME=$(mktemp -d)` to simulate a fresh
