@@ -38,14 +38,20 @@ Pick the lowest-friction path that works.
 ### 1. Check whether the CLI is already usable
 
 ```bash
-decodo whoami          # installed + authenticated?  prints auth source + masked token
+decodo whoami          # what auth is CONFIGURED — does not check that it works
 # or, with nothing installed:
 npx -y @decodo/cli whoami
 ```
 
-- Exit 0 with a token printed → you're ready, skip to **Usage**.
-- "auth required" / exit 3 → continue to step 2.
+- Exit 0 with a token printed → auth is *configured*; skip to **Usage**. The first real command
+  is what proves the token is valid.
+- Exit 3 (`No auth token found.`) → continue to step 2.
 - `decodo: command not found` → use `npx -y @decodo/cli ...` for everything, or install (step 3).
+
+`whoami` prints the active source and a masked token and makes **no network call**, so an
+expired or invalid token still exits **0**. Never read an exit-0 `whoami` as "authenticated".
+To confirm a token actually works, run `decodo setup --token '<token>'` (it validates against
+the API first) or just run the real command and handle exit 3.
 
 ### 2. Authenticate
 
@@ -61,10 +67,12 @@ export DECODO_AUTH_TOKEN='<token>'
 To persist it to the CLI config non-interactively:
 
 ```bash
-decodo setup --token '<token>'      # validates, then saves to config
+decodo setup --token '<token>'      # validates against the API, saves only on success
 ```
 
 Do **not** run a bare `decodo setup` — it opens a hidden interactive prompt you cannot drive.
+The CLI's own auth errors end with the hint `Run 'decodo setup' to configure your auth token`;
+ignore it and use `--token` or the env var.
 Token precedence: `--token` flag → `DECODO_AUTH_TOKEN` env → saved config.
 
 **Treat the token as a secret.** If `whoami` reports no auth, ask the user to set
