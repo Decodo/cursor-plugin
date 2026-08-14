@@ -1,12 +1,52 @@
 ---
-description: Install the Decodo CLI and recover from install, PATH, or authentication failures.
+description: Recover from any Decodo failure — a 401 or "Authentication failed" from a Decodo MCP tool, or a Decodo CLI install, PATH, or auth error. Covers both the MCP server and the decodo CLI.
 alwaysApply: false
 ---
 
-# Decodo CLI installation and recovery
+# Decodo failure recovery
 
-The `decodo` skill assumes a working CLI. Use this rule when installation, `PATH`, or
-authentication fails.
+Two ways to reach Decodo, two different auth stores. Use this rule when either one fails.
+
+- **A Decodo MCP tool returned an error** → **MCP auth recovery**, immediately below.
+- **The `decodo` CLI failed to install, is not on `PATH`, or exits 3** → everything from
+  **Zero-install first** onward.
+
+## MCP auth recovery
+
+Symptom, returned from a Decodo MCP tool call rather than a shell command:
+
+```
+Scraper API request failed (401): Authentication failed.
+```
+
+**The server being connected tells you nothing.** It accepts `initialize` and `tools/list` with
+any `Authorization` header — including the literal `${DECODO_AUTH_TOKEN}` produced when the
+variable is unset — so Cursor shows the server healthy with its full tool list and only the first
+real call fails. Read a 401 here as a missing or wrong token, never as a Decodo outage, and never
+as a reason to retry the same call.
+
+The fix is a **plugin variable**, not `decodo setup` — the CLI's config is a separate store and
+writing to it will not help. Tell the user:
+
+> Cursor → Settings → Plugins → Decodo → set **DECODO_AUTH_TOKEN**, then reload the window.
+
+An exported `DECODO_AUTH_TOKEN` also resolves and takes precedence, but Cursor only inherits
+environment variables when it is launched from a shell, so the Settings route is the reliable
+one. Tokens come from <https://dashboard.decodo.com/playground> (free account = up to 2K
+requests, no card).
+
+Reloading is required — the header is resolved when the server connects, so a token set after
+that does not take effect until reconnect.
+
+**While MCP is unauthenticated, the `decodo` CLI is the working lane** if a shell is available:
+it has its own token and covers every target. Fall back to it and say so. What you must not do is
+fall back to fetching the target site directly with `curl`, `requests`, or a headless browser —
+see the substitution ban in the `decodo` skill. A blocked page parsed as if it were real data is
+worse than reporting the failure.
+
+If a Decodo MCP tool you need is missing rather than failing, it is outside the enabled toolsets
+(default `web,search`). Use the CLI for that target instead of asking the user to widen
+`DECODO_TOOLSETS` — the CLI covers all of them at no context cost.
 
 ## Zero-install first
 
@@ -33,7 +73,10 @@ Verify:
 decodo --version && decodo whoami
 ```
 
-## Authentication
+## Authentication (CLI)
+
+This section is the **CLI's** token store, which is separate from the MCP plugin variable above —
+setting one does not affect the other.
 
 The user needs a Web Scraping API basic auth token from
 <https://dashboard.decodo.com/playground> (free account = up to 2K requests, no card).
@@ -50,7 +93,7 @@ Precedence: `--token` → `DECODO_AUTH_TOKEN` → saved config.
 **Treat the token as a secret.** Never `cat`, read, or echo it from a config file to work
 around missing auth. If auth is missing, ask the user for a token.
 
-## Failure recovery
+## Failure recovery (CLI)
 
 ### `decodo: command not found` after install
 

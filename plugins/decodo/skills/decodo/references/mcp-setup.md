@@ -1,5 +1,10 @@
 # Decodo MCP setup (per client)
 
+**In Cursor, this plugin already ships the server** — `mcp.json` declares it, and it reads the
+`DECODO_AUTH_TOKEN` plugin variable (Settings → Plugins → Decodo) or the environment variable of
+the same name. Scope it with `DECODO_TOOLSETS`, default `web,search`. Nothing below is needed
+there; use this file for **other clients**.
+
 Use this when the host has **no shell** (Claude Desktop, claude.ai) or when you prefer tool-call
 native scraping over the CLI. Decodo's MCP server is hosted at `https://mcp.decodo.com/mcp` and
 authenticates with the same Web Scraping API **basic auth token** used everywhere else
