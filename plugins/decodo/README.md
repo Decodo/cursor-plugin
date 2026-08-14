@@ -9,9 +9,25 @@ data instead of a 403.
 | Component | What it does |
 | --- | --- |
 | `decodo` skill | Teaches the agent when to reach for Decodo, which target to pick, and how to handle output |
+| MCP server | Hosted Decodo tools the agent can call directly — no install, no shell |
+| `/decodo-setup`, `/decodo-status` | Get a token in place; see which surfaces are live |
 | `install` rule | Recovers from install, `PATH`, and authentication failures without you debugging them |
 
-The agent calls the Decodo CLI as a subprocess. No MCP server to configure.
+## Two surfaces, one token
+
+| | MCP server | `decodo` CLI |
+| --- | --- | --- |
+| Install | none | none (`npx`) or one installer command |
+| Needs a shell | no | yes |
+| Coverage | the toolsets you enable | every target, always |
+| Best for | plain scrape and search | retail, social, screenshots to file, batches, `jq` |
+
+Both ship enabled. The skill routes plain scrape/search through MCP and everything else through
+the CLI, so you don't have to think about it.
+
+The MCP server defaults to the `web,search` toolsets. Widen it with `DECODO_TOOLSETS` (`web`,
+`search`, `ecommerce`, `social_media`, `ai`) only if you want those targets as direct tool calls
+— every enabled tool costs context in every request, and the CLI already covers all of them.
 
 ## Setup
 
@@ -19,14 +35,19 @@ The agent calls the Decodo CLI as a subprocess. No MCP server to configure.
 [Decodo Playground](https://dashboard.decodo.com/playground). A free account includes 2,000
 requests, no card required.
 
-**2. Make it available.** Either is fine:
+**2. Set `DECODO_AUTH_TOKEN`.** Cursor prompts for it when you install the plugin, or set it
+later under Settings → Plugins → Decodo. That one value authenticates the MCP server and the
+CLI. An exported shell variable also works and takes precedence:
 
 ```bash
 export DECODO_AUTH_TOKEN='<your-token>'     # session-scoped
-npx -y @decodo/cli setup --token '<token>'  # saved to ~/.config/decodo
+npx -y @decodo/cli setup --token '<token>'  # CLI only, saved to ~/.config/decodo
 ```
 
-That's it. **No install step** — the agent runs `npx -y @decodo/cli` on demand.
+Or just run `/decodo-setup` and let the agent walk you through it.
+
+That's it. **No install step** — MCP is hosted, and the CLI runs via `npx -y @decodo/cli` on
+demand.
 
 For a persistent `decodo` command in your own terminal:
 
@@ -79,19 +100,25 @@ don't flood your context.
 
 ## Troubleshooting
 
-Authentication and install problems are handled by the bundled `install` rule — ask the agent
-and it will work through them. Common cases:
+Run `/decodo-status` first — it reports which surfaces are actually live. Authentication and
+install problems are handled by the bundled `install` rule, so ask the agent and it will work
+through them. Common cases:
 
 | Symptom | Cause |
 | --- | --- |
+| No Decodo tools in the tool list | `DECODO_AUTH_TOKEN` unset, or the window needs reloading |
+| MCP works, but no Amazon/Reddit tools | Those live in the `ecommerce`/`social_media` toolsets — the CLI covers them without widening `DECODO_TOOLSETS` |
 | `No auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
 | `EACCES` on `npm install -g` | Use the `curl` installer instead |
 | Old version after upgrading | Two installs on `PATH`; `where decodo` to find both |
 
+`decodo whoami` reads local config and makes no network call — it exits 0 on a token the API
+would reject, so treat it as "a token is configured", not "authentication works".
+
 ## Links
 
 - CLI: [Decodo/cli](https://github.com/Decodo/cli) · [`@decodo/cli`](https://www.npmjs.com/package/@decodo/cli)
-- MCP server (for clients without a shell): [Decodo/mcp-server](https://github.com/Decodo/mcp-server)
+- MCP server: [Decodo/mcp-server](https://github.com/Decodo/mcp-server) · hosted at `https://mcp.decodo.com/mcp`
 - Docs: [help.decodo.com](https://help.decodo.com)
 
 ## License

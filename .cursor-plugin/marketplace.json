@@ -12,7 +12,7 @@
     {
       "name": "decodo",
       "source": "./plugins/decodo",
-      "description": "Web scraping, SERP, and e-commerce data for AI agents via the Decodo CLI"
+      "description": "Web scraping, SERP, and e-commerce data for AI agents via the hosted Decodo MCP server and the Decodo CLI"
     }
   ]
 }

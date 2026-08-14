@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "decodo": {
+      "type": "http",
+      "url": "https://mcp.decodo.com/mcp?toolsets=${DECODO_TOOLSETS:-web,search}",
+      "headers": {
+        "Authorization": "Basic ${DECODO_AUTH_TOKEN}"
+      }
+    }
+  }
+}

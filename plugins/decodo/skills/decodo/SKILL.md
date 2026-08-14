@@ -15,8 +15,9 @@ license: MIT
 
 Decodo is a web scraping API that returns clean web data without you managing proxies,
 browsers, or anti-bot logic. This skill teaches you to reach for it through the **`decodo`
-CLI** (primary), the **hosted MCP server** (when there is no shell), or the **raw HTTP API**
-(fallback).
+CLI** (full target surface), the **hosted MCP server** (zero-install, ships with this plugin),
+or the **raw HTTP API** (fallback). Read **Choosing a surface** before you run anything — the
+two main lanes overlap, and which one you pick is decided by the task, not by habit.
 
 ## When to use Decodo
 
@@ -110,15 +111,31 @@ npm install -g @decodo/cli                                # any platform
 
 ## Choosing a surface
 
-1. **Shell available** (Claude Code, Cursor, Codex CLI, Gemini CLI, Windsurf, terminal) → use
-   the **`decodo` CLI**. This is the default and the rest of this skill assumes it.
-2. **No shell** (Claude Desktop, claude.ai, an MCP-only client) → use the hosted **MCP server**
-   at `https://mcp.decodo.com/mcp` (Basic auth with the same token). Per-client config in
-   [`references/mcp-setup.md`](references/mcp-setup.md).
-3. **Neither** → call the **raw HTTP API** with `curl` — recipes in
-   [`references/api-curl.md`](references/api-curl.md). This means `curl` against Decodo's
-   endpoint (`https://scraper-api.decodo.com/v2/scrape`) with your token. It is never
-   permission to `curl` the target site directly; all three surfaces are Decodo.
+Three surfaces, one token. This plugin ships two of them — the MCP server (`mcp.json`) and this
+CLI skill — so **both may be live at once**. When they are, decide by the task, in this order:
+
+1. **Decodo MCP tools are in your tool list** (`scrape_as_markdown`, `google_search`, …) **and
+   the task is a plain scrape or search** → call the MCP tool. Fewer steps, no install, no
+   token plumbing. Enabled toolsets default to `web,search`; the user can widen them with the
+   `DECODO_TOOLSETS` plugin variable.
+2. **Otherwise → the `decodo` CLI.** It covers the full target surface (all ~30 targets,
+   generated from the API schema at runtime) regardless of which MCP toolsets are enabled.
+   Required for anything MCP cannot do: a target outside the enabled toolsets (Amazon, Walmart,
+   Target, Reddit, TikTok, YouTube when only `web,search` is on), writing binary output to a
+   file (`screenshot -o`), batching many URLs, or piping into `jq`/a script. The rest of this
+   skill assumes this lane.
+3. **No shell and no MCP** (Claude Desktop, claude.ai, an MCP-only client not yet configured) →
+   set up MCP from [`references/mcp-setup.md`](references/mcp-setup.md), or call the **raw HTTP
+   API** with `curl` — recipes in [`references/api-curl.md`](references/api-curl.md). That means
+   `curl` against Decodo's endpoint (`https://scraper-api.decodo.com/v2/scrape`) with your
+   token. It is never permission to `curl` the target site directly; all three surfaces are
+   Decodo.
+
+Do not run the same request through both lanes to compare them — it bills twice.
+
+If an MCP call fails on auth, the fix is the plugin variable `DECODO_AUTH_TOKEN` (Cursor →
+Settings → Plugins → Decodo), not `decodo setup`. The CLI and the MCP server read their tokens
+from different places; see **Setup** below for the CLI's precedence.
 
 ## Usage (CLI)
 

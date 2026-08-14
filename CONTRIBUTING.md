@@ -52,12 +52,20 @@ node scripts/validate-template.mjs
 "Validation passed" and exits 0 without checking a single plugin. A green result with no
 per-plugin lines means nothing was validated.
 
-Expected warnings for the `decodo` plugin: no `hooks/hooks.json` and no `mcp.json`. Both are
-intentional — the plugin is CLI-backed and ships neither.
+Expected warning for the `decodo` plugin: no `hooks/hooks.json`. That one is intentional — the
+plugin ships no hooks. A warning about a missing `mcp.json` means something was deleted; the
+plugin ships one.
 
 ## Testing locally
 
-Copy the plugin into Cursor's local plugin directory and restart Cursor:
+Run the installer from the repository root, then restart Cursor:
+
+```bash
+bash install.sh              # install (also registers the plugin with Claude Code)
+bash install.sh --uninstall  # remove
+```
+
+It does the equivalent of this by hand:
 
 ```bash
 rm -rf ~/.cursor/plugins/local/decodo
@@ -103,6 +111,24 @@ Worth testing (all of it requires a confirmed load first):
   install rather than `decodo reset`, which destroys real credentials.
 - A bad token (`DECODO_AUTH_TOKEN=garbage`) causes the agent to follow `install.mdc` recovery
   rather than guess.
+
+**A live MCP server hides the skill.** When Decodo MCP tools are in the tool list, the agent
+calls them directly — the skill is never read and the CLI is never invoked. Decodo still gets
+used, so "it worked" is a false positive for the skill. This plugin now ships `mcp.json`, and a
+user-level Decodo server in `~/.cursor/mcp.json` has the same effect independently.
+
+To test the **skill**, ask for a target outside the enabled toolsets (default `web,search` — so
+an Amazon or Reddit request routes to the CLI), or disable the server: Settings → MCP toggle, or
+move `~/.cursor/mcp.json` aside, then reload.
+
+To tell the two apart afterwards, grep the current log directory: `mcpToolCall bubble` is MCP, a
+terminal command running `decodo` is the skill. Cursor's logs do not record agent terminal
+commands, so for a definitive answer read a *copy* of the chat store at
+`~/Library/Application Support/Cursor/User/globalStorage/state.vscdb` (SQLite, table
+`cursorDiskKV`; `bubbleId:*` rows hold `toolFormerData` with `status` and a base64
+`toolCallBinary` containing the shell command). Require `status: completed`, and cross-check any
+command string against the repo — the skill's own example commands appear in the store simply
+because the skill text entered context.
 
 ## Submitting to the marketplace
 
