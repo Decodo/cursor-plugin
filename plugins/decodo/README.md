@@ -11,7 +11,7 @@ data instead of a 403.
 | `decodo` skill | Teaches the agent when to reach for Decodo, which target to pick, and how to handle output |
 | MCP server | Hosted Decodo tools the agent can call directly — no install, no shell |
 | `/decodo-setup`, `/decodo-status` | Get a token in place; see which surfaces are live |
-| `install` rule | Recovers from install, `PATH`, and authentication failures without you debugging them |
+| recovery rule | Recovers from failures on either surface — an MCP 401, or CLI install/`PATH`/auth errors — without you debugging them |
 
 ## Two surfaces, one token
 
@@ -101,7 +101,7 @@ don't flood your context.
 ## Troubleshooting
 
 Run `/decodo-status` first — it reports which surfaces are actually live. Authentication and
-install problems are handled by the bundled `install` rule, so ask the agent and it will work
+install problems are handled by the bundled recovery rule, so ask the agent and it will work
 through them. Common cases:
 
 | Symptom | Cause |

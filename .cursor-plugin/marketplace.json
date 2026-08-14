@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Web data plugins by Decodo: scraping, SERP, and e-commerce extraction",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {

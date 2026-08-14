@@ -7,12 +7,22 @@
 plugins/decodo/
   .cursor-plugin/plugin.json        # plugin manifest
   assets/logo.svg                   # marketplace logo, 1:1
-  rules/install.mdc                 # CLI install + auth recovery
+  mcp.json                          # hosted MCP server, ${VAR}-interpolated
+  rules/install.mdc                 # MCP auth + CLI install/auth recovery
   skills/decodo/SKILL.md            # capability surface
   skills/decodo/references/         # MCP client config, raw HTTP recipes
+  commands/                         # /decodo-setup, /decodo-status
   README.md                         # setup guide for this plugin
+install.sh                          # local install for development
 scripts/validate-template.mjs       # manifest validator (from cursor/plugin-template)
 ```
+
+`plugin.json` declares every component path explicitly (`skills`, `rules`, `commands`,
+`mcpServers`) rather than relying on auto-discovery, and declares a `variables` JSON Schema so
+Cursor collects `DECODO_AUTH_TOKEN` at install time. `mcp.json` uses `${DECODO_AUTH_TOKEN}` and
+`${DECODO_TOOLSETS:-web,search}`; Cursor resolves those from the environment first, then from the
+configured plugin variable, and supports the `:-` default. Verified against Cursor 3.2.21 — the
+header reaches the server with the value substituted.
 
 This is a multi-plugin layout: `marketplace.json` at the repository root registers each plugin,
 and every plugin lives in its own folder under `plugins/` with its own `plugin.json`.
@@ -111,6 +121,12 @@ Worth testing (all of it requires a confirmed load first):
   install rather than `decodo reset`, which destroys real credentials.
 - A bad token (`DECODO_AUTH_TOKEN=garbage`) causes the agent to follow `install.mdc` recovery
   rather than guess.
+- An MCP 401 is handled as a token problem. With `DECODO_AUTH_TOKEN` unset the server still
+  connects and lists tools — the header goes out as the literal `${DECODO_AUTH_TOKEN}` — and only
+  the first tool call fails with `Scraper API request failed (401): Authentication failed.` The
+  agent should point at the plugin variable and not retry, not treat it as an outage, and not fall
+  back to fetching the target site directly.
+- `/decodo-setup` and `/decodo-status` appear in the slash-command list and run.
 
 **A live MCP server hides the skill.** When Decodo MCP tools are in the tool list, the agent
 calls them directly — the skill is never read and the CLI is never invoked. Decodo still gets
