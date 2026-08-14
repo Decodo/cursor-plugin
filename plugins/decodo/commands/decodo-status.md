@@ -20,6 +20,19 @@ Check your own tool list for Decodo tools. Report:
 Do not call a tool just to test it — that bills a request. Presence in the tool list is the
 check.
 
+**Connected does not mean authenticated.** The server accepts `initialize` and `tools/list` with
+any `Authorization` header, valid or not, so Cursor shows the server connected with its full tool
+list even when the token is wrong or missing entirely. If `DECODO_AUTH_TOKEN` is unset, the
+header is sent as the literal `${DECODO_AUTH_TOKEN}` and the connection still succeeds — then
+every tool call fails with:
+
+```
+Scraper API request failed (401): Authentication failed.
+```
+
+So report the MCP lane as "connected — token unverified", and if the user has seen that 401,
+treat it as an unset or wrong `DECODO_AUTH_TOKEN`, not as a Decodo outage. Verified Aug 2026.
+
 ## CLI lane
 
 ```bash

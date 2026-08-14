@@ -137,6 +137,12 @@ If an MCP call fails on auth, the fix is the plugin variable `DECODO_AUTH_TOKEN`
 Settings → Plugins → Decodo), not `decodo setup`. The CLI and the MCP server read their tokens
 from different places; see **Setup** below for the CLI's precedence.
 
+A connected MCP server proves nothing about auth — it accepts `initialize` and `tools/list` with
+any `Authorization` header, so the tools appear even when the token is missing. The failure shows
+up on the first real call as `Scraper API request failed (401): Authentication failed.` Treat that
+as an unset or wrong token and ask the user for one; do not fall back to the CLI silently, and
+never fall back to fetching the target site directly.
+
 ## Usage (CLI)
 
 ### Core commands

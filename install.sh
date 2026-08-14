@@ -118,7 +118,9 @@ if os.path.exists(path):
     except Exception: data = {}
 data.setdefault('enabledPlugins', {})['$PLUGIN_ID'] = True
 os.makedirs(os.path.dirname(path), exist_ok=True)
-json.dump(data, open(path, 'w'), indent=2)
+with open(path, 'w') as f:
+    json.dump(data, f, indent=2)
+    f.write('\n')
 "
 
   echo ""

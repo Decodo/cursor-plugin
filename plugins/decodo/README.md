@@ -106,7 +106,8 @@ through them. Common cases:
 
 | Symptom | Cause |
 | --- | --- |
-| No Decodo tools in the tool list | `DECODO_AUTH_TOKEN` unset, or the window needs reloading |
+| Server shows connected, but every call returns `Scraper API request failed (401)` | `DECODO_AUTH_TOKEN` is unset or wrong. The server accepts any `Authorization` header at connect time, so the tool list appears either way — connected is not authenticated |
+| No Decodo tools in the tool list | The window needs reloading, or the plugin didn't load |
 | MCP works, but no Amazon/Reddit tools | Those live in the `ecommerce`/`social_media` toolsets — the CLI covers them without widening `DECODO_TOOLSETS` |
 | `No auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
 | `EACCES` on `npm install -g` | Use the `curl` installer instead |
