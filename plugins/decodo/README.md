@@ -31,8 +31,8 @@ The MCP server defaults to the `web,search` toolsets. Widen it with `DECODO_TOOL
 
 ## Setup
 
-**1. Get a token.** Grab a Web Scraping API basic auth token from the
-[Decodo Playground](https://dashboard.decodo.com/playground). A free account includes 2,000
+**1. Get an API key.** Grab a Web Data API key from the
+[Decodo Playground](https://dashboard.decodo.com/web-data/playground). A free account includes 2,000
 requests, no card required.
 
 **2. Set `DECODO_AUTH_TOKEN`.** Cursor prompts for it when you install the plugin, or set it
@@ -109,7 +109,7 @@ through them. Common cases:
 | Server shows connected, but every call returns `Scraper API request failed (401)` | `DECODO_AUTH_TOKEN` is unset or wrong. The server accepts any `Authorization` header at connect time, so the tool list appears either way — connected is not authenticated |
 | No Decodo tools in the tool list | The window needs reloading, or the plugin didn't load |
 | MCP works, but no Amazon/Reddit tools | Those live in the `ecommerce`/`social_media` toolsets — the CLI covers them without widening `DECODO_TOOLSETS` |
-| `No auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
+| `No API key or auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
 | `EACCES` on `npm install -g` | Use the `curl` installer instead |
 | Old version after upgrading | Two installs on `PATH`; `where decodo` to find both |
 

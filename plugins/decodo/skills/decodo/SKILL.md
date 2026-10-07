@@ -66,7 +66,7 @@ npx -y @decodo/cli whoami
 - Exit 0 with a token printed → a token is *configured*. That is all it means. Do not tell the
   user Decodo is "authenticated" or "set up" on this basis — you do not know that yet. Skip to
   **Usage**; the first real command is the auth test.
-- Exit 3 (`No auth token found.`) → continue to step 2.
+- Exit 3 (`No API key or auth token found.`) → continue to step 2.
 - `decodo: command not found` → use `npx -y @decodo/cli ...` for everything, or install (step 3).
 
 `whoami` prints the active source and a masked token and makes **no network call**, so an
@@ -76,8 +76,8 @@ the API first) or just run the real command and handle exit 3.
 
 ### 2. Authenticate
 
-The user needs a Web Scraping API **basic auth token** from
-<https://dashboard.decodo.com/playground> (free account = up to 2K requests, no card).
+The user needs a Web Data API **key** (or, on older plans, a basic auth token) from
+<https://dashboard.decodo.com/web-data/playground> (free account = up to 2K requests, no card).
 
 Prefer the environment variable — it needs no interaction and is easy to scope to a session:
 
@@ -92,7 +92,7 @@ decodo setup --token '<token>'      # validates against the API, saves only on s
 ```
 
 Do **not** run a bare `decodo setup` — it opens a hidden interactive prompt you cannot drive.
-The CLI's own auth errors end with the hint `Run 'decodo setup' to configure your auth token`;
+The CLI's own auth errors end with the hint `Run 'decodo setup' to configure your API key or auth token`;
 ignore it and use `--token` or the env var.
 Token precedence: `--token` flag → `DECODO_AUTH_TOKEN` env → saved config.
 
@@ -235,7 +235,8 @@ curl -s https://scraper-api.decodo.com/v2/scrape \
   -d '{"target":"universal","url":"https://example.com","markdown":true}'
 ```
 
-The token is the same basic auth token from the playground. More recipes (parsed SERP,
+This is the basic auth token form. For a Web Data API key, post to `https://data.decodo.com/v1/scrape`
+with `-H "Authorization: Bearer $DECODO_AUTH_TOKEN"` instead. More recipes (parsed SERP,
 screenshots, target names, response shape) in [`references/api-curl.md`](references/api-curl.md).
 Prefer the CLI or MCP when available.
 
@@ -243,4 +244,4 @@ Prefer the CLI or MCP when available.
 
 - CLI: <https://github.com/Decodo/cli> · `@decodo/cli` on npm
 - MCP server: <https://github.com/Decodo/mcp-server> · hosted at `https://mcp.decodo.com/mcp`
-- Dashboard / token / free tier: <https://dashboard.decodo.com/playground>
+- Dashboard / token / free tier: <https://dashboard.decodo.com/web-data/playground>

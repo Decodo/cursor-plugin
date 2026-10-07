@@ -1,11 +1,13 @@
 # Raw HTTP API recipes (curl)
 
-Use this only when neither the `decodo` CLI nor an MCP client is available. Same token as
-everywhere else — a Web Scraping API **basic auth token** from
-<https://dashboard.decodo.com/playground>, passed as `Authorization: Basic <token>`.
+Use this only when neither the `decodo` CLI nor an MCP client is available. Same credential as
+everywhere else — a Web Data API **key**, or on older plans a **basic auth token**, from
+<https://dashboard.decodo.com/web-data/playground>.
 
-- **Endpoint (sync):** `POST https://scraper-api.decodo.com/v2/scrape`
-- **Auth header:** `Authorization: Basic $DECODO_AUTH_TOKEN`
+- **API key:** `POST https://data.decodo.com/v1/scrape` with `Authorization: Bearer $DECODO_AUTH_TOKEN`
+- **Basic auth token (older plans):** `POST https://scraper-api.decodo.com/v2/scrape` with
+  `Authorization: Basic $DECODO_AUTH_TOKEN`
+- The examples below use the basic token. For an API key, swap in the host, path and header above.
 - **Body:** JSON; `target` selects what to scrape, plus per-target params.
 
 ## Target names

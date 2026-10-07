@@ -32,7 +32,7 @@ writing to it will not help. Tell the user:
 
 An exported `DECODO_AUTH_TOKEN` also resolves and takes precedence, but Cursor only inherits
 environment variables when it is launched from a shell, so the Settings route is the reliable
-one. Tokens come from <https://dashboard.decodo.com/playground> (free account = up to 2K
+one. Tokens come from <https://dashboard.decodo.com/web-data/playground> (free account = up to 2K
 requests, no card).
 
 Reloading is required — the header is resolved when the server connects, so a token set after
@@ -78,8 +78,8 @@ decodo --version && decodo whoami
 This section is the **CLI's** token store, which is separate from the MCP plugin variable above —
 setting one does not affect the other.
 
-The user needs a Web Scraping API basic auth token from
-<https://dashboard.decodo.com/playground> (free account = up to 2K requests, no card).
+The user needs a Web Data API key (or, on older plans, a basic auth token) from
+<https://dashboard.decodo.com/web-data/playground> (free account = up to 2K requests, no card).
 
 ```bash
 export DECODO_AUTH_TOKEN='<token>'     # preferred: no interaction, session-scoped
@@ -118,12 +118,12 @@ npm install -g @decodo/cli
 
 If neither works, use `npx -y @decodo/cli` and move on — it needs no install.
 
-### Exit code 3 — `No auth token found.` or `Username invalid.`
+### Exit code 3 — `No API key or auth token found.` or `Username invalid.`
 
 Exit **3** is the auth failure code. Match on the exit code, not on text: the output contains
 no "401", "unauthorized", or "auth required". The two messages mean different things:
 
-- `No auth token found.` — nothing is configured.
+- `No API key or auth token found.` — nothing is configured.
 - `Username invalid.` — a token *is* configured, and the API rejected it (expired, wrong, or
   truncated). The wording says "Username" because the token is basic-auth credentials.
 
@@ -136,7 +136,7 @@ only whether something is set, never whether it works. Do not use it to confirm 
 validate a token, run `decodo setup --token '<token>'` — it verifies against the API and writes
 nothing on failure.
 
-Both auth errors end with the hint `Run 'decodo setup' to configure your auth token`.
+Both auth errors end with the hint `Run 'decodo setup' to configure your API key or auth token`.
 **Ignore that hint** — a bare `decodo setup` opens an interactive prompt you cannot drive
 (see above). Use `decodo setup --token '<token>'` or `export DECODO_AUTH_TOKEN='<token>'`.
 
@@ -144,7 +144,7 @@ Then, if an ask-user tool is available (such as `AskUserQuestion`), ask:
 
 **"How would you like to authenticate with Decodo?"**
 
-1. **Paste an API token (Recommended)** — from <https://dashboard.decodo.com/playground>
+1. **Paste an API key or auth token (Recommended)** — from <https://dashboard.decodo.com/web-data/playground>
 2. **Set it for this session only** — export `DECODO_AUTH_TOKEN`
 
 **Ask — do not route around it.** An auth failure is fixable by the user in seconds. Never
@@ -180,7 +180,7 @@ npm install -g @decodo/cli@latest                          # only if npm -g is w
 0.x stored the token in a platform preferences directory (on macOS,
 `~/Library/Preferences/decodo/config.json`). 1.0.x reads `$DECODO_CONFIG_HOME`, else
 `$XDG_CONFIG_HOME/decodo`, else `~/.config/decodo`. There is no automatic migration, so a
-freshly upgraded CLI reports `No auth token found.` even though a token was configured before.
+freshly upgraded CLI reports `No API key or auth token found.` even though a token was configured before.
 
 Both versions use the same `{"authToken": "..."}` schema, so migrate the file rather than
 asking the user to re-fetch a token:

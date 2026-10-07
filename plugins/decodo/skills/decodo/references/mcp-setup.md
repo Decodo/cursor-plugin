@@ -7,8 +7,9 @@ there; use this file for **other clients**.
 
 Use this when the host has **no shell** (Claude Desktop, claude.ai) or when you prefer tool-call
 native scraping over the CLI. Decodo's MCP server is hosted at `https://mcp.decodo.com/mcp` and
-authenticates with the same Web Scraping API **basic auth token** used everywhere else
-(`Authorization: Basic <token>`). Get a token at <https://dashboard.decodo.com/playground>
+authenticates with the same credential used everywhere else: a Web Data API **key**
+(`Authorization: Bearer <api_key>`) or, on older plans, a **basic auth token**
+(`Authorization: Basic <basic_auth_token>`). Get one at <https://dashboard.decodo.com/web-data/playground>
 (free tier: ~2K requests, no card).
 
 ## Hosted server — generic config
@@ -20,7 +21,7 @@ Most MCP clients accept a remote server by URL + headers. Add:
   "mcpServers": {
     "Decodo": {
       "url": "https://mcp.decodo.com/mcp",
-      "headers": { "Authorization": "Basic <basic_auth_token>" }
+      "headers": { "Authorization": "Bearer <api_key>" }
     }
   }
 }
@@ -45,7 +46,7 @@ MCP in Claude Code:
 
 ```bash
 claude mcp add --transport http Decodo https://mcp.decodo.com/mcp \
-  --header "Authorization: Basic <basic_auth_token>"
+  --header "Authorization: Bearer <api_key>"
 ```
 
 ### Claude Desktop
@@ -60,7 +61,7 @@ claude mcp add --transport http Decodo https://mcp.decodo.com/mcp \
          "command": "npx",
          "args": ["-y", "@decodo/mcp-server"],
          "env": {
-           "SCRAPER_API_TOKEN": "<basic_auth_token>",
+           "SCRAPER_API_TOKEN": "<api_key>",
            "TOOLSETS": "web,ai"
          }
        }
@@ -88,7 +89,7 @@ One-click install deeplink is also on the [MCP server README](https://github.com
 Run the server yourself instead of using the hosted endpoint:
 
 ```bash
-npx -y @decodo/mcp-server          # quick, with SCRAPER_API_TOKEN in env
+npx -y @decodo/mcp-server          # quick, with your API key or basic auth token in SCRAPER_API_TOKEN
 ```
 
 Or clone and build from <https://github.com/Decodo/mcp-server> and point your client at

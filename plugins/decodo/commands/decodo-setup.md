@@ -26,8 +26,8 @@ Report the result as a two-line status, then continue only for the parts that ar
 
 ## 2. Get a token (needed for either lane)
 
-Both lanes use the same Web Scraping API basic auth token. Point the user at
-<https://dashboard.decodo.com/playground> — a free account gives ~2K requests with no card.
+Both lanes use the same Web Data API key. Older plans only have a basic auth token, which works the same way. Point the user at
+<https://dashboard.decodo.com/web-data/playground> — a free account gives ~2K requests with no card.
 
 **Never read, `cat`, echo, or log the token**, and never write it into a file the user tracks in
 git. If a token is already configured somewhere, do not extract it to reuse it elsewhere — ask

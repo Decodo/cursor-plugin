@@ -37,8 +37,8 @@
     "properties": {
       "DECODO_AUTH_TOKEN": {
         "type": "string",
-        "title": "Decodo API token",
-        "description": "Web Scraping API basic auth token from https://dashboard.decodo.com/playground (free account = up to 2K requests, no card). The same token authenticates the MCP server, the CLI, and the raw API."
+        "title": "Decodo API key or token",
+        "description": "Web Data API key (or, on older plans, basic auth token) from https://dashboard.decodo.com/web-data/playground (free account = up to 2K requests, no card). The same credential authenticates the MCP server, the CLI, and the raw API."
       },
       "DECODO_TOOLSETS": {
         "type": "string",

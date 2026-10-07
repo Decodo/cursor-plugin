@@ -47,7 +47,7 @@ Report version and auth source. Two things to state plainly rather than paper ov
 - **Version below 1.0.0** → flag it. 0.x stored config in a different directory and has no
   migration, so an upgrade looks like lost auth.
 
-Exit 3 means no usable token (`No auth token found.`) or a rejected one (`Username invalid.` —
+Exit 3 means no usable token (`No API key or auth token found.`) or a rejected one (`Username invalid.` —
 the wording says "Username" because the token is basic-auth credentials).
 
 ## Report
