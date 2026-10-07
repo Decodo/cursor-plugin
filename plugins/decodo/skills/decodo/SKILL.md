@@ -220,7 +220,7 @@ stdout is data; logs and errors go to stderr — pipes stay clean.
 | 0 | Success | — |
 | 1 | Generic error | Read stderr |
 | 2 | Usage error (bad flags) | Re-check `--help` |
-| 3 | Auth error | Token missing/invalid → redo **Setup step 2** |
+| 3 | Auth error | Key or token missing/rejected (`No API key or auth token found.`, `Invalid credentials`, `Incorrect username or password`) → redo **Setup step 2** |
 | 4 | Validation error | Fix the argument/flag the message names |
 | 5 | Rate limited | Back off and retry; reduce concurrency |
 | 6 | Timeout | Retry with backoff |
@@ -229,16 +229,16 @@ stdout is data; logs and errors go to stderr — pipes stay clean.
 ## Raw API fallback (no CLI, no MCP)
 
 ```bash
-curl -s https://scraper-api.decodo.com/v2/scrape \
-  -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
+curl -s https://data.decodo.com/v1/scrape \
+  -H "Authorization: Bearer $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"target":"universal","url":"https://example.com","markdown":true}'
 ```
 
-This is the basic auth token form. For a Web Data API key, post to `https://data.decodo.com/v1/scrape`
-with `-H "Authorization: Bearer $DECODO_AUTH_TOKEN"` instead. More recipes (parsed SERP,
-screenshots, target names, response shape) in [`references/api-curl.md`](references/api-curl.md).
-Prefer the CLI or MCP when available.
+That is the API key form. On older plans with a basic auth token, post to
+`https://scraper-api.decodo.com/v2/scrape` with `-H "Authorization: Basic $DECODO_AUTH_TOKEN"`
+instead. More recipes (parsed SERP, screenshots, target names, response shape) in
+[`references/api-curl.md`](references/api-curl.md). Prefer the CLI or MCP when available.
 
 ## Links
 

@@ -44,6 +44,10 @@ export DECODO_AUTH_TOKEN='<your-token>'     # session-scoped
 npx -y @decodo/cli setup --token '<token>'  # CLI only, saved to ~/.config/decodo
 ```
 
+The value can be a Web Data API key or, on older plans, a basic auth token. The plugin's MCP header
+is `Basic ${DECODO_AUTH_TOKEN}` either way: the hosted server detects the credential type from the
+value, not from the header scheme.
+
 Or just run `/decodo-setup` and let the agent walk you through it.
 
 That's it. **No install step** — MCP is hosted, and the CLI runs via `npx -y @decodo/cli` on

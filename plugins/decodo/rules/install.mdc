@@ -22,7 +22,7 @@ Scraper API request failed (401): Authentication failed.
 **The server being connected tells you nothing.** It accepts `initialize` and `tools/list` with
 any `Authorization` header — including the literal `${DECODO_AUTH_TOKEN}` produced when the
 variable is unset — so Cursor shows the server healthy with its full tool list and only the first
-real call fails. Read a 401 here as a missing or wrong token, never as a Decodo outage, and never
+real call fails. Read a 401 here as a missing or wrong credential, never as a Decodo outage, and never
 as a reason to retry the same call.
 
 The fix is a **plugin variable**, not `decodo setup` — the CLI's config is a separate store and
@@ -32,7 +32,7 @@ writing to it will not help. Tell the user:
 
 An exported `DECODO_AUTH_TOKEN` also resolves and takes precedence, but Cursor only inherits
 environment variables when it is launched from a shell, so the Settings route is the reliable
-one. Tokens come from <https://dashboard.decodo.com/web-data/playground> (free account = up to 2K
+one. API keys come from <https://dashboard.decodo.com/web-data/playground> (free account = up to 2K
 requests, no card).
 
 Reloading is required — the header is resolved when the server connects, so a token set after
@@ -118,14 +118,15 @@ npm install -g @decodo/cli
 
 If neither works, use `npx -y @decodo/cli` and move on — it needs no install.
 
-### Exit code 3 — `No API key or auth token found.` or `Username invalid.`
+### Exit code 3 — `No API key or auth token found.`, `Invalid credentials` or `Incorrect username or password`
 
 Exit **3** is the auth failure code. Match on the exit code, not on text: the output contains
-no "401", "unauthorized", or "auth required". The two messages mean different things:
+no "401", "unauthorized", or "auth required". The messages mean different things:
 
 - `No API key or auth token found.` — nothing is configured.
-- `Username invalid.` — a token *is* configured, and the API rejected it (expired, wrong, or
-  truncated). The wording says "Username" because the token is basic-auth credentials.
+- `Invalid credentials` — an API key *is* configured, and the API rejected it (expired, wrong,
+  or truncated).
+- `Incorrect username or password` — a basic auth token *is* configured, and the API rejected it.
 
 ```bash
 decodo whoami        # shows the CONFIGURED source + masked token — does NOT validate it
@@ -182,8 +183,8 @@ npm install -g @decodo/cli@latest                          # only if npm -g is w
 `$XDG_CONFIG_HOME/decodo`, else `~/.config/decodo`. There is no automatic migration, so a
 freshly upgraded CLI reports `No API key or auth token found.` even though a token was configured before.
 
-Both versions use the same `{"authToken": "..."}` schema, so migrate the file rather than
-asking the user to re-fetch a token:
+A 0.x config holds `{"authToken": "..."}`, which 1.x still reads (1.x also accepts
+`{"apiKey": "..."}`), so migrate the file rather than asking the user to re-fetch a credential:
 
 ```bash
 mkdir -p ~/.config/decodo
