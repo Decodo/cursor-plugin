@@ -10,10 +10,10 @@ data instead of a 403.
 | --- | --- |
 | `decodo` skill | Teaches the agent when to reach for Decodo, which target to pick, and how to handle output |
 | MCP server | Hosted Decodo tools the agent can call directly — no install, no shell |
-| `/decodo-setup`, `/decodo-status` | Get a token in place; see which surfaces are live |
+| `/decodo-setup`, `/decodo-status` | Get an API key or token in place; see which surfaces are live |
 | recovery rule | Recovers from failures on either surface — an MCP 401, or CLI install/`PATH`/auth errors — without you debugging them |
 
-## Two surfaces, one token
+## Two surfaces, one credential
 
 | | MCP server | `decodo` CLI |
 | --- | --- | --- |

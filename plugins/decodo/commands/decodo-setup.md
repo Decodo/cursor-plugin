@@ -1,6 +1,6 @@
 ---
 name: decodo-setup
-description: Get Decodo working in this editor — fetch a token, then authenticate the MCP server, the CLI, or both.
+description: Get Decodo working in this editor — fetch an API key (or token), then authenticate the MCP server, the CLI, or both.
 argument-hint: "[mcp|cli] (optional — otherwise ask)"
 ---
 
@@ -24,7 +24,7 @@ Report the result as a two-line status, then continue only for the parts that ar
 - **CLI**: exit 0 (a token is configured — not necessarily a valid one) / exit 3 (no token) /
   `command not found`
 
-## 2. Get a token (needed for either lane)
+## 2. Get an API key or token (needed for either lane)
 
 Both lanes use the same Web Data API key. Older plans only have a basic auth token, which works the same way. Point the user at
 <https://dashboard.decodo.com/web-data/playground> — a free account gives ~2K requests with no card.

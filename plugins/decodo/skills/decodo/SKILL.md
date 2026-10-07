@@ -111,7 +111,7 @@ npm install -g @decodo/cli                                # any platform
 
 ## Choosing a surface
 
-Three surfaces, one token. This plugin ships two of them — the MCP server (`mcp.json`) and this
+Three surfaces, one credential. This plugin ships two of them — the MCP server (`mcp.json`) and this
 CLI skill — so **both may be live at once**. When they are, decide by the task, in this order:
 
 1. **Decodo MCP tools are in your tool list** (`scrape_as_markdown`, `google_search`, …) **and
@@ -244,4 +244,4 @@ instead. More recipes (parsed SERP, screenshots, target names, response shape) i
 
 - CLI: <https://github.com/Decodo/cli> · `@decodo/cli` on npm
 - MCP server: <https://github.com/Decodo/mcp-server> · hosted at `https://mcp.decodo.com/mcp`
-- Dashboard / token / free tier: <https://dashboard.decodo.com/web-data/playground>
+- Dashboard / API key / free tier: <https://dashboard.decodo.com/web-data/playground>

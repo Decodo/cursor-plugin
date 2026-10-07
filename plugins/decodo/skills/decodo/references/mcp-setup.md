@@ -101,5 +101,5 @@ In the client, prompt:
 
 > "Scrape the titles of the top 5 articles from Hacker News"
 
-A structured list back within seconds means it's wired up. An auth error means the token is
+A structured list back within seconds means it's wired up. An auth error means the API key or token is
 wrong or missing — recheck it in the dashboard.
