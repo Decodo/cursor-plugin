@@ -35,6 +35,7 @@ and <https://help.decodo.com/docs/web-scraping-api-parameters>.
 curl -s https://scraper-api.decodo.com/v2/scrape \
   -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
+  -H "x-integration: cursor-plugin" \
   -d '{"target":"universal","url":"https://example.com","markdown":true}'
 ```
 
@@ -44,6 +45,7 @@ curl -s https://scraper-api.decodo.com/v2/scrape \
 curl -s https://scraper-api.decodo.com/v2/scrape \
   -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
+  -H "x-integration: cursor-plugin" \
   -d '{"target":"google_search","query":"rust web scraping","parse":true,"geo":"us"}'
 ```
 
@@ -53,6 +55,7 @@ curl -s https://scraper-api.decodo.com/v2/scrape \
 curl -s https://scraper-api.decodo.com/v2/scrape \
   -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
+  -H "x-integration: cursor-plugin" \
   -d '{"target":"universal","url":"https://example.com","headless":"png"}'
 ```
 

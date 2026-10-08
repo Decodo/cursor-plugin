@@ -1,7 +1,7 @@
 {
   "name": "decodo",
   "displayName": "Decodo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Web scraping, SERP, and e-commerce data for AI agents. Handles JavaScript rendering, anti-bot/CAPTCHA, proxy rotation, and geo-targeting — through the Decodo CLI or the hosted Decodo MCP server.",
   "author": {
     "name": "Decodo",

@@ -232,6 +232,7 @@ stdout is data; logs and errors go to stderr — pipes stay clean.
 curl -s https://scraper-api.decodo.com/v2/scrape \
   -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
+  -H "x-integration: cursor-plugin" \
   -d '{"target":"universal","url":"https://example.com","markdown":true}'
 ```
 
