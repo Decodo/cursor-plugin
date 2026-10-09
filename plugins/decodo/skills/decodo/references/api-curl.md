@@ -1,11 +1,12 @@
 # Raw HTTP API recipes (curl)
 
-Use this only when neither the `decodo` CLI nor an MCP client is available. Same token as
-everywhere else — a Web Scraping API **basic auth token** from
-<https://dashboard.decodo.com/playground>, passed as `Authorization: Basic <token>`.
+Use this only when neither the `decodo` CLI nor an MCP client is available. Same credential as
+everywhere else — a Web Data API **key**, or on older plans a **basic auth token**, from
+<https://dashboard.decodo.com/web-data/playground>.
 
-- **Endpoint (sync):** `POST https://scraper-api.decodo.com/v2/scrape`
-- **Auth header:** `Authorization: Basic $DECODO_AUTH_TOKEN`
+- **Endpoint (sync):** `POST https://data.decodo.com/v1/scrape`
+- **Auth header:** `Authorization: Bearer $DECODO_AUTH_TOKEN`
+- **Older plans (basic auth token):** see [Basic auth token](#basic-auth-token-older-plans) below.
 - **Body:** JSON; `target` selects what to scrape, plus per-target params.
 
 ## Target names
@@ -32,8 +33,8 @@ and <https://help.decodo.com/docs/web-scraping-api-parameters>.
 ### Scrape a page as Markdown
 
 ```bash
-curl -s https://scraper-api.decodo.com/v2/scrape \
-  -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
+curl -s https://data.decodo.com/v1/scrape \
+  -H "Authorization: Bearer $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"target":"universal","url":"https://example.com","markdown":true}'
 ```
@@ -41,8 +42,8 @@ curl -s https://scraper-api.decodo.com/v2/scrape \
 ### Google SERP, parsed JSON
 
 ```bash
-curl -s https://scraper-api.decodo.com/v2/scrape \
-  -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
+curl -s https://data.decodo.com/v1/scrape \
+  -H "Authorization: Bearer $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"target":"google_search","query":"rust web scraping","parse":true,"geo":"us"}'
 ```
@@ -50,11 +51,25 @@ curl -s https://scraper-api.decodo.com/v2/scrape \
 ### Screenshot (PNG, base64 in the response)
 
 ```bash
-curl -s https://scraper-api.decodo.com/v2/scrape \
-  -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
+curl -s https://data.decodo.com/v1/scrape \
+  -H "Authorization: Bearer $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"target":"universal","url":"https://example.com","headless":"png"}'
 ```
+
+## Basic auth token (older plans)
+
+Same bodies and response shape; only the host, path and header change:
+
+```bash
+curl -s https://scraper-api.decodo.com/v2/scrape \
+  -H "Authorization: Basic $DECODO_AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"target":"universal","url":"https://example.com","markdown":true}'
+```
+
+A credential sent to the other host is rejected: a key on `/v2/scrape` returns `Username invalid.`,
+a token on `data.decodo.com` returns `Invalid credentials`.
 
 ## Response shape
 

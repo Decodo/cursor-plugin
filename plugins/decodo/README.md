@@ -10,10 +10,10 @@ data instead of a 403.
 | --- | --- |
 | `decodo` skill | Teaches the agent when to reach for Decodo, which target to pick, and how to handle output |
 | MCP server | Hosted Decodo tools the agent can call directly — no install, no shell |
-| `/decodo-setup`, `/decodo-status` | Get a token in place; see which surfaces are live |
+| `/decodo-setup`, `/decodo-status` | Get an API key or token in place; see which surfaces are live |
 | recovery rule | Recovers from failures on either surface — an MCP 401, or CLI install/`PATH`/auth errors — without you debugging them |
 
-## Two surfaces, one token
+## Two surfaces, one credential
 
 | | MCP server | `decodo` CLI |
 | --- | --- | --- |
@@ -31,8 +31,8 @@ The MCP server defaults to the `web,search` toolsets. Widen it with `DECODO_TOOL
 
 ## Setup
 
-**1. Get a token.** Grab a Web Scraping API basic auth token from the
-[Decodo Playground](https://dashboard.decodo.com/playground). A free account includes 2,000
+**1. Get an API key.** Grab a Web Data API key from the
+[Decodo Playground](https://dashboard.decodo.com/web-data/playground). A free account includes 2,000
 requests, no card required.
 
 **2. Set `DECODO_AUTH_TOKEN`.** Cursor prompts for it when you install the plugin, or set it
@@ -43,6 +43,10 @@ CLI. An exported shell variable also works and takes precedence:
 export DECODO_AUTH_TOKEN='<your-token>'     # session-scoped
 npx -y @decodo/cli setup --token '<token>'  # CLI only, saved to ~/.config/decodo
 ```
+
+The value can be a Web Data API key or, on older plans, a basic auth token. The plugin's MCP header
+is `Basic ${DECODO_AUTH_TOKEN}` either way: the hosted server detects the credential type from the
+value, not from the header scheme.
 
 Or just run `/decodo-setup` and let the agent walk you through it.
 
@@ -109,7 +113,7 @@ through them. Common cases:
 | Server shows connected, but every call returns `Scraper API request failed (401)` | `DECODO_AUTH_TOKEN` is unset or wrong. The server accepts any `Authorization` header at connect time, so the tool list appears either way — connected is not authenticated |
 | No Decodo tools in the tool list | The window needs reloading, or the plugin didn't load |
 | MCP works, but no Amazon/Reddit tools | Those live in the `ecommerce`/`social_media` toolsets — the CLI covers them without widening `DECODO_TOOLSETS` |
-| `No auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
+| `No API key or auth token found.` after upgrading from CLI 0.x | Config location changed; the rule migrates it |
 | `EACCES` on `npm install -g` | Use the `curl` installer instead |
 | Old version after upgrading | Two installs on `PATH`; `where decodo` to find both |
 

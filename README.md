@@ -14,7 +14,7 @@ rotation, and geo-targeting across 125M+ IPs in 195+ locations.
 
 Install from the Cursor Marketplace, or point Cursor at this repository directly.
 
-Setup takes one token (`DECODO_AUTH_TOKEN`) and no install step — see
+Setup takes one credential, an API key or auth token (`DECODO_AUTH_TOKEN`), and no install step — see
 [`plugins/decodo/README.md`](plugins/decodo/README.md).
 
 To try it from a clone before it is listed:
