@@ -15,6 +15,8 @@ plugins/decodo/
   README.md                         # setup guide for this plugin
 install.sh                          # local install for development
 scripts/validate-template.mjs       # manifest validator (from cursor/plugin-template)
+scripts/check-version.mjs           # version bump check, run in CI on every PR
+.github/workflows/                  # version check on PRs, GitHub Release on main
 ```
 
 `plugin.json` declares every component path explicitly (`skills`, `rules`, `commands`,
@@ -145,6 +147,27 @@ commands, so for a definitive answer read a *copy* of the chat store at
 `toolCallBinary` containing the shell command). Require `status: completed`, and cross-check any
 command string against the repo — the skill's own example commands appear in the store simply
 because the skill text entered context.
+
+## Versioning and releases
+
+Any PR that changes files under `plugins/` or `.cursor-plugin/` must bump versions, or the
+`Version check` workflow fails:
+
+- `version` in the `plugin.json` of every plugin whose folder changed
+- `metadata.version` in `.cursor-plugin/marketplace.json`, which is the release version
+
+Bump by hand, MAJOR.MINOR.PATCH only. Docs and tooling outside those folders (`README.md`,
+`CONTRIBUTING.md`, `install.sh`, `scripts/`) need no bump. To run the check locally against
+`main`:
+
+```bash
+node scripts/check-version.mjs origin/main
+```
+
+When a merge to `main` carries a `metadata.version` that has no tag yet, the `Release` workflow
+tags that commit `vX.Y.Z` and creates a GitHub Release with notes generated from the merged PRs.
+If the tag already exists it does nothing, so a PR that bumps to a version someone else already
+released produces no release.
 
 ## Submitting to the marketplace
 
