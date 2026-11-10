@@ -1,7 +1,7 @@
 {
   "name": "decodo",
   "displayName": "Decodo",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Web scraping, SERP, and e-commerce data for AI agents. Handles JavaScript rendering, anti-bot/CAPTCHA, proxy rotation, and geo-targeting — through the Decodo CLI or the hosted Decodo MCP server.",
   "author": {
     "name": "Decodo",
@@ -38,12 +38,12 @@
       "DECODO_AUTH_TOKEN": {
         "type": "string",
         "title": "Decodo API key or token",
-        "description": "Web Data API key (or, on older plans, basic auth token) from https://dashboard.decodo.com/web-data/playground (free account = up to 2K requests, no card). The same credential authenticates the MCP server, the CLI, and the raw API."
+        "description": "Web Data API key (or, on older plans, basic auth token) from https://dashboard.decodo.com/web-data/playground (free account = up to 10K requests, no card). The same credential authenticates the MCP server, the CLI, and the raw API. Search, map and crawl need an API key."
       },
       "DECODO_TOOLSETS": {
         "type": "string",
         "title": "MCP toolsets (optional)",
-        "description": "Which Decodo MCP toolsets to enable, comma-separated. Defaults to \"web,search\". Available: web, search, ecommerce, social_media, ai. The full server exposes ~30 tools, so enable only what you need — every enabled tool's schema is resident in each request. The decodo CLI covers all targets regardless of this setting."
+        "description": "Which Decodo MCP toolsets to enable, comma-separated. Defaults to \"web,search\". Available: web, search, ecommerce, social_media, ai. Enable only what you need — every enabled tool's schema is resident in each request. The decodo CLI covers all targets regardless of this setting."
       }
     },
     "required": [

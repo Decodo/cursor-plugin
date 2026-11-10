@@ -26,8 +26,8 @@ Report the result as a two-line status, then continue only for the parts that ar
 
 ## 2. Get an API key or token (needed for either lane)
 
-Both lanes use the same Web Data API key. Older plans only have a basic auth token, which works the same way. Point the user at
-<https://dashboard.decodo.com/web-data/playground> — a free account gives ~2K requests with no card.
+Both lanes use the same Web Data API key. Older plans only have a basic auth token, which works the same way except for search, map and crawl, which need an API key. Point the user at
+<https://dashboard.decodo.com/web-data/playground> — a free account gives up to 10K requests with no card.
 
 **Never read, `cat`, echo, or log the token**, and never write it into a file the user tracks in
 git. If a token is already configured somewhere, do not extract it to reuse it elsewhere — ask

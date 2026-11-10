@@ -20,10 +20,11 @@ data instead of a 403.
 | Install | none | none (`npx`) or one installer command |
 | Needs a shell | no | yes |
 | Coverage | the toolsets you enable | every target, always |
-| Best for | plain scrape and search | retail, social, screenshots to file, batches, `jq` |
+| Best for | plain scrape, search and map | crawls, retail, social, screenshots to file, batches, `jq` |
 
-Both ship enabled. The skill routes plain scrape/search through MCP and everything else through
-the CLI, so you don't have to think about it.
+Both ship enabled. The skill routes plain scrape, search and map through MCP and everything else
+through the CLI, so you don't have to think about it. Crawls go through the CLI when a shell is
+available, because it writes pages to a file instead of into the agent's context.
 
 The MCP server defaults to the `web,search` toolsets. Widen it with `DECODO_TOOLSETS` (`web`,
 `search`, `ecommerce`, `social_media`, `ai`) only if you want those targets as direct tool calls
@@ -32,8 +33,8 @@ The MCP server defaults to the `web,search` toolsets. Widen it with `DECODO_TOOL
 ## Setup
 
 **1. Get an API key.** Grab a Web Data API key from the
-[Decodo Playground](https://dashboard.decodo.com/web-data/playground). A free account includes 2,000
-requests, no card required.
+[Decodo Playground](https://dashboard.decodo.com/web-data/playground). A free account includes up to
+10,000 requests, no card required.
 
 **2. Set `DECODO_AUTH_TOKEN`.** Cursor prompts for it when you install the plugin, or set it
 later under Settings → Plugins → Decodo. That one value authenticates the MCP server and the
@@ -44,7 +45,8 @@ export DECODO_AUTH_TOKEN='<your-token>'     # session-scoped
 npx -y @decodo/cli setup --token '<token>'  # CLI only, saved to ~/.config/decodo
 ```
 
-The value can be a Web Data API key or, on older plans, a basic auth token. The plugin's MCP header
+The value can be a Web Data API key or, on older plans, a basic auth token. Search, map and crawl
+need an API key; a basic token works for everything else. The plugin's MCP header
 is `Basic ${DECODO_AUTH_TOKEN}` either way: the hosted server detects the credential type from the
 value, not from the header scheme.
 
