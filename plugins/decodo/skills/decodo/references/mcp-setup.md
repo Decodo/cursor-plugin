@@ -10,7 +10,8 @@ native scraping over the CLI. Decodo's MCP server is hosted at `https://mcp.deco
 authenticates with the same credential used everywhere else: a Web Data API **key**
 (`Authorization: Bearer <api_key>`) or, on older plans, a **basic auth token**
 (`Authorization: Basic <basic_auth_token>`). Get one at <https://dashboard.decodo.com/web-data/playground>
-(free tier: ~2K requests, no card).
+(free tier: up to 10K requests, no card). `search`, `map` and the crawl tools need an API key;
+a basic auth token is rejected on those.
 
 ## Hosted server — generic config
 
@@ -29,9 +30,11 @@ Most MCP clients accept a remote server by URL + headers. Add:
 
 ### Toolsets (optional, recommended)
 
-The server exposes ~30 tools across five toolsets: `web`, `search`, `ecommerce`,
-`social_media`, `ai`. Enabling only what you need keeps tool selection clean and the agent
-faster. On the hosted URL, scope with a query param:
+Tools are grouped into five toolsets: `web` (scraping, screenshots, map and crawl), `search`
+(web and SERP search), `ecommerce`, `social_media` and `ai`. The hosted server hides some
+tools, so the tool list your client shows is the source of truth; don't assume a tool exists
+because the npm package or its README lists it. Enabling only what you need keeps tool
+selection clean and the agent faster. On the hosted URL, scope with a query param:
 
 ```
 https://mcp.decodo.com/mcp?toolsets=web,search

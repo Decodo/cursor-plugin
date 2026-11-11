@@ -32,7 +32,7 @@ writing to it will not help. Tell the user:
 
 An exported `DECODO_AUTH_TOKEN` also resolves and takes precedence, but Cursor only inherits
 environment variables when it is launched from a shell, so the Settings route is the reliable
-one. API keys come from <https://dashboard.decodo.com/web-data/playground> (free account = up to 2K
+one. API keys come from <https://dashboard.decodo.com/web-data/playground> (free account = up to 10K
 requests, no card).
 
 Reloading is required — the header is resolved when the server connects, so a token set after
@@ -79,7 +79,7 @@ This section is the **CLI's** token store, which is separate from the MCP plugin
 setting one does not affect the other.
 
 The user needs a Web Data API key (or, on older plans, a basic auth token) from
-<https://dashboard.decodo.com/web-data/playground> (free account = up to 2K requests, no card).
+<https://dashboard.decodo.com/web-data/playground> (free account = up to 10K requests, no card).
 
 ```bash
 export DECODO_AUTH_TOKEN='<token>'     # preferred: no interaction, session-scoped
@@ -127,6 +127,9 @@ no "401", "unauthorized", or "auth required". The messages mean different things
 - `Invalid credentials` — an API key *is* configured, and the API rejected it (expired, wrong,
   or truncated).
 - `Incorrect username or password` — a basic auth token *is* configured, and the API rejected it.
+- Any exit 3 from `search`, `map` or `crawl` while `decodo whoami` shows `token:` (not
+  `api key:`) — those three commands need an API key, and a basic token is never accepted there.
+  Ask the user for an API key; `scrape` and target commands keep working with the token.
 
 ```bash
 decodo whoami        # shows the CONFIGURED source + masked token — does NOT validate it

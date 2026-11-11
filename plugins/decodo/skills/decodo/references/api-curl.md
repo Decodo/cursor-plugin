@@ -25,7 +25,7 @@ and <https://help.decodo.com/docs/web-scraping-api-parameters>.
 | `query` | string | For search targets (`google_search`, `bing_search`, …) |
 | `markdown` | bool | Return page content as Markdown |
 | `parse` | bool | Return structured JSON (parse-enabled targets only) |
-| `geo` | string | Country/geo code, e.g. `us`, `de` |
+| `geo` | string | Country/geo code, e.g. `US`, `DE` |
 | `headless` | string | `png` for a screenshot, `html` for rendered HTML |
 
 ## Recipes
@@ -47,7 +47,7 @@ curl -s https://data.decodo.com/v1/scrape \
   -H "Authorization: Bearer $DECODO_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -H "x-integration: cursor-plugin" \
-  -d '{"target":"google_search","query":"rust web scraping","parse":true,"geo":"us"}'
+  -d '{"target":"google_search","query":"rust web scraping","parse":true,"geo":"US"}'
 ```
 
 ### Screenshot (PNG, base64 in the response)
@@ -60,9 +60,33 @@ curl -s https://data.decodo.com/v1/scrape \
   -d '{"target":"universal","url":"https://example.com","headless":"png"}'
 ```
 
+## Search, map and crawl (Data API)
+
+These endpoints sit on the same host and need an API key; a basic auth token is rejected.
+
+```bash
+H=(-H "Authorization: Bearer $DECODO_AUTH_TOKEN" -H "Content-Type: application/json" -H "x-integration: cursor-plugin")
+
+# Web search → parsed JSON with .organic[]
+curl -s https://data.decodo.com/v1/search "${H[@]}" -d '{"query":"rust web scraping","geo":"DE"}'
+
+# Map → .results[].content.links[].url
+curl -s https://data.decodo.com/v1/map "${H[@]}" \
+  -d '{"url":"https://example.com","limit":100,"select_paths":["/blog/*"]}'
+
+# Crawl: start (returns crawl_id), poll status, then page through results with `next`
+curl -s https://data.decodo.com/v1/crawl "${H[@]}" -d '{"url":"https://example.com","limit":50}'
+curl -s https://data.decodo.com/v1/crawl/<crawl_id>/status "${H[@]}"
+curl -s "https://data.decodo.com/v1/crawl/<crawl_id>?type=content" "${H[@]}" -o pages.json  # omit ?type=content for metadata only
+curl -s -X POST https://data.decodo.com/v1/crawl/<crawl_id>/cancel "${H[@]}"
+```
+
+Write crawl pages to a file and read them with `jq`, never straight into context.
+
 ## Basic auth token (older plans)
 
-Same bodies and response shape; only the host, path and header change:
+Same bodies and response shape for `/scrape`; only the host, path and header change. There is
+no search, map or crawl on this host — those need an API key.
 
 ```bash
 curl -s https://scraper-api.decodo.com/v2/scrape \

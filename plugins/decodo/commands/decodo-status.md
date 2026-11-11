@@ -12,8 +12,8 @@ Diagnose, do not fix. Report what is true, then name the single next step if som
 Check your own tool list for Decodo tools. Report:
 
 - **Tools present?** yes / no
-- **Which ones**, and therefore which toolsets are enabled (`scrape_as_markdown`/`screenshot` →
-  `web`; `google_search`/`bing_search` → `search`; `amazon_*`/`walmart_*`/`target_*` →
+- **Which ones**, and therefore which toolsets are enabled (`scrape_as_markdown`/`screenshot`/`map`/`crawl_*` →
+  `web`; `search`/`google_search` → `search`; `amazon_*`/`walmart_*`/`target_*` →
   `ecommerce`; `reddit_*`/`tiktok_*`/`youtube_*` → `social_media`; `chatgpt`/`perplexity`/
   `google_ai_mode` → `ai`).
 
@@ -46,6 +46,8 @@ Report version and auth source. Two things to state plainly rather than paper ov
   token the API would reject. Report it as "a token is configured", never as "authenticated".
 - **Version below 1.0.0** → flag it. 0.x stored config in a different directory and has no
   migration, so an upgrade looks like lost auth.
+- **Version below 2.0.0** → flag it. It has no `map` or `crawl`, and its `search` flags differ
+  from the skill's; `npx -y @decodo/cli@latest` or reinstalling gets the current version.
 
 Exit 3 means no usable credential (`No API key or auth token found.`) or a rejected one
 (`Invalid credentials` for an API key, `Incorrect username or password` for a basic auth token).
@@ -57,9 +59,9 @@ Give the user a short table — surface, state, next step — and nothing else:
 | Surface | State |
 |---|---|
 | MCP | tools present, toolsets `web,search` |
-| CLI | v1.0.2, token configured (unvalidated) |
+| CLI | v3.0.0, API key configured (unvalidated) |
 
-If both lanes are live, say so and note that plain scrape/search will go through MCP while
-everything else goes through the CLI. If neither is, point at `/decodo-setup`.
+If both lanes are live, say so and note that plain scrape, search and map will go through MCP while
+crawls and everything else go through the CLI. If neither is, point at `/decodo-setup`.
 
 Never print, echo, or partially reveal the token, even masked output copied from `whoami`.
