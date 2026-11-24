@@ -14,8 +14,7 @@ Check your own tool list for Decodo tools. Report:
 - **Tools present?** yes / no
 - **Which ones**, and therefore which toolsets are enabled (`scrape_as_markdown`/`screenshot`/`map`/`crawl_*` →
   `web`; `search`/`google_search` → `search`; `amazon_*`/`walmart_*`/`target_*` →
-  `ecommerce`; `reddit_*`/`tiktok_*`/`youtube_*` → `social_media`; `chatgpt`/`perplexity`/
-  `google_ai_mode` → `ai`).
+  `ecommerce`; `tiktok_*`/`youtube_*` → `social_media`; `chatgpt`/`google_ai_mode` → `ai`).
 
 Do not call a tool just to test it — that bills a request. Presence in the tool list is the
 check.
